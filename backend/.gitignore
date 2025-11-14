@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Docker files that shouldn't be versioned
+docker-compose.override.yml
+.dockerignore
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Optional coverage folder if using testing tools
+coverage/
+azure-credentials.json
+azure-credentials.json
