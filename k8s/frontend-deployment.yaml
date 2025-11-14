@@ -20,6 +20,6 @@ spec:
             - name: NEXT_PUBLIC_API_KEY
               value: "9686ece7b4a67012adf7510c01c75dd2"
             - name: NEXT_PUBLIC_API_URL
-              value: "http://weatherlyl-backend:4000"
+              value: "http://weatherly-backend.weatherly.svc.cluster.local:4000"
           ports:
             - containerPort: 3000
