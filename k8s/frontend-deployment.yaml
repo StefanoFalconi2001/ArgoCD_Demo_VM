@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherly-frontend
+  namespace: weatherly
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weatherly-frontend
+  template:
+    metadata:
+      labels:
+        app: weatherly-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: weatherly-frontend:latest
+        env:
+        - name: NEXT_PUBLIC_API_KEY
+          value: "9686ece7b4a67012adf7510c01c75dd2"
+        - name: NEXT_PUBLIC_API_URL
+          value: "http://weatherly-backend.weatherly.svc.cluster.local:4000"
+        ports:
+        - containerPort: 3000

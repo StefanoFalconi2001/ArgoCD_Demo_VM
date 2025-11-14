@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherly-backend
+  namespace: weatherly
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weatherly-backend
+  template:
+    metadata:
+      labels:
+        app: weatherly-backend
+    spec:
+      containers:
+        - name: backend
+          image: sfalconi2001/weatherly-backend:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://weatherly_user:weatherly_pass@weatherly-mongodb.weatherly.svc.cluster.local:27017/weatherly_db?authSource=admin"

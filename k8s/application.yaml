@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: weatherly
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/StefanoFalconi2001/ArgoCD_Demo'
+    targetRevision: main
+    path: argo
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: weatherly
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  sources:
+    - path: weatherly-mongodb
+    - path: weatherly-backend
+    - path: weatherly-frontend
+    - path: ingress

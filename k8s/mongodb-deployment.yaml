@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherly-mongodb
+  namespace: weatherly
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weatherly-mongodb
+  template:
+    metadata:
+      labels:
+        app: weatherly-mongodb
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:6
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "weatherly_user"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: "weatherly_pass"
+        - name: MONGO_INITDB_DATABASE
+          value: "weatherly_db"
+        ports:
+        - containerPort: 27017

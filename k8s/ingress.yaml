@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: weatherly-ingress
+  namespace: weatherly
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: weatherly.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: weatherly-frontend
+            port:
+              number: 3000
+      - path: /weathersdb
+        pathType: Prefix
+        backend:
+          service:
+            name: weatherly-backend
+            port:
+              number: 4000
