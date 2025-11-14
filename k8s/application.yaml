@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/StefanoFalconi2001/ArgoCD_Demo'
+    repoURL: 'https://github.com/StefanoFalconi2001/ArgoCD_Demo_VM.git'
     targetRevision: main
-    path: argo
+    path: k8s          
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: weatherly
@@ -16,8 +16,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  sources:
-    - path: weatherly-mongodb
-    - path: weatherly-backend
-    - path: weatherly-frontend
-    - path: ingress
