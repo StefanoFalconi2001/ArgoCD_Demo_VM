@@ -1,11 +1,13 @@
-name: Generate Changeset PR
+name: Generate Changeset PR (Frontend)
 
 on:
+    # Corre cuando cambia algo del frontend o del changeset global
     push:
-        paths:
-            - "frontend/.changeset/**"
         branches:
             - main
+        paths:
+            - "frontend/**"
+            - ".changeset/**"
 
 permissions:
     contents: write
@@ -24,15 +26,17 @@ jobs:
               with:
                   node-version: "20"
 
-            - name: Install dependencies
+            - name: Install ROOT dependencies
               run: npm install
-              working-directory: frontend
 
-            - name: Run Changesets Action
+            - name: Install Frontend dependencies
+              run: npm install
+              working-directory: ./frontend
+
+            - name: Run Changesets Action (root)
               uses: changesets/action@v1
               with:
                   publish: "false"
                   version: "false"
-                  cwd: "./frontend"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
