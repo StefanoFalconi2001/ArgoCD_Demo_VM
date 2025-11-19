@@ -1,22 +1,10 @@
 {
   "name": "argocd_demo_vm",
-  "version": "1.0.0",
-  "description": "Versión para despliegue en Kubernetes + ArgoCD",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StefanoFalconi2001/ArgoCD_Demo_VM.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/StefanoFalconi2001/ArgoCD_Demo_VM/issues"
-  },
-  "homepage": "https://github.com/StefanoFalconi2001/ArgoCD_Demo_VM#readme",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "devDependencies": {
     "@changesets/cli": "^2.29.7"
   }

@@ -1,0 +1,122 @@
+# =========================
+#   NODE / JAVASCRIPT
+# =========================
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo
+
+# Next.js (frontend)
+.next/
+out/
+dist/
+frontend/.next/
+frontend/out/
+frontend/dist/
+
+# Backend (Node API)
+backend/dist/
+backend/.env
+backend/*.log
+
+# =========================
+#   ENV FILES
+# =========================
+.env
+.env.*
+frontend/.env
+backend/.env
+**/.env.local
+**/.env.production
+**/.env.development
+
+# =========================
+#   BUILD OUTPUTS
+# =========================
+*.log
+logs/
+*.zip
+*.gz
+*.tgz
+**/build/
+**/coverage/
+tmp/
+temp/
+
+# =========================
+#   DOCKER
+# =========================
+*.tar
+docker-compose.override.yml
+docker-compose.dev.yml
+**/.dockerignore
+
+# =========================
+#   KUBERNETES
+# =========================
+# YAML generados por ArgoCD o envsubst
+k8s/**/dev/*-patch.yaml
+k8s/**/tmp/
+*.yaml.save
+*.yaml.bak
+
+# =========================
+#   TERRAFORM
+# =========================
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# =========================
+#   HELM
+# =========================
+helm/charts/**/charts/
+helm/charts/**/tmp/
+helm/charts/**/Chart.lock
+
+# =========================
+#   GLOBAL CHANGESETS
+# =========================
+.changeset/cache.json
+
+# =========================
+#   EDITOR / IDE
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+#   OPERATING SYSTEM FILES
+# =========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+#   PYTHON (si usas scripts)
+# =========================
+__pycache__/
+*.pyc
+
+node_modules/
