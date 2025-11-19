@@ -29,4 +29,4 @@ jobs:
               with:
                   publish: "false"
               env:
-                  TOKEN_FOR_CHANGESETS: ${{ secrets.TOKEN_FOR_CHANGESETS }}
+                  GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_CHANGESETS }}
