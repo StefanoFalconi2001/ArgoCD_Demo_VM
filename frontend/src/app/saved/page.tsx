@@ -1,108 +1,151 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useReducer, useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-type WeatherData = {
-  _id: string;
-  city: string;
-  temperature: number;
-  description: string;
-  createdAt: string;
+import WeatherForm from "@/components/WeatherForm";
+import WeatherList from "@/components/WeatherList";
+import { weatherReducer } from "@/reducers/weatherReducer";
+import { WeatherData, saveWeatherResult } from "@/services/weatherService";
+import { handleSearch } from "@/utilities/formUtilities";
+
+const initialState = {
+  weather: [],
+  loading: false,
+  error: "",
+  selected: new Set<string>(),
+  savedWeathers: [],
 };
 
-export default function SavedPage() {
-  const [savedWeather, setSavedWeather] = useState<WeatherData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+// --- Types ---
+type WeatherStatusProps = {
+  loading: boolean;
+  error: string;
+  hasResults: boolean;
+};
 
-  const urlApi = process.env.NEXT_PUBLIC_API_URL!;
+type Notification = {
+  message: string;
+  type: "success" | "error";
+};
 
+// --- Status Component ---
+function WeatherStatus({ loading, error, hasResults }: WeatherStatusProps) {
+  if (loading)
+    return <p className="loading-message">Loading weather data...</p>;
+  if (error) return <p className="error-message">{error}</p>;
+  if (!loading && !error && !hasResults)
+    return <p className="loading-message">No results found.</p>;
+  return null;
+}
+
+// --- 🎉 Notification Component ---
+function NotificationBox({
+  notification,
+  onClose,
+}: {
+  notification: Notification;
+  onClose: () => void;
+}) {
+  const bg =
+    notification.type === "success"
+      ? "bg-green-600 text-white"
+      : "bg-red-600 text-white";
+
+  // auto close after 3s
   useEffect(() => {
-    const fetchSavedWeather = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(urlApi);
-        if (!res.ok) throw new Error("Failed to fetch saved weather data");
-        const data = await res.json();
-        setSavedWeather(data);
-      } catch (err) {
-        console.error("Error al obtener datos guardados", err);
-        setError("Error loading saved data. Try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    const timer = setTimeout(onClose, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
-    fetchSavedWeather();
-  }, [urlApi]);
+  return (
+    <AnimatePresence>
+      {notification && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className={`fixed top-5 right-5 px-4 py-3 rounded-lg shadow-lg ${bg}`}
+        >
+          {notification.message}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
-  const handleDelete = async (id: string) => {
+// --- Main Page ---
+export default function Home() {
+  const [state, dispatch] = useReducer(weatherReducer, initialState);
+  const [selectedWeather, setSelectedWeather] = useState<WeatherData[]>([]);
+  const [notification, setNotification] = useState<Notification | null>(null);
+
+  const search = handleSearch(dispatch);
+
+  const saveSelectedWeather = async () => {
+    if (selectedWeather.length === 0) return;
+
     try {
-      const res = await fetch(`${urlApi}/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        setSavedWeather((prev) => prev.filter((item) => item._id !== id));
-      } else {
-        alert("Error deleting the result.");
-      }
-    } catch (err) {
-      console.error("Error deleting", err);
-      alert("Error deleting the result.");
+      await Promise.all(selectedWeather.map((w) => saveWeatherResult(w)));
+      setNotification({ message: "Weather data saved!", type: "success" });
+      setSelectedWeather([]);
+    } catch (error) {
+      setNotification({
+        message: error instanceof Error ? error.message : "Unknown error",
+        type: "error",
+      });
     }
   };
 
-  const filteredWeather = savedWeather.filter((item) =>
-    item.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const goHome = () => {
-    window.location.href = "/";
-  };
+  const handleSelectionChange = useCallback((selected: WeatherData[]) => {
+    setSelectedWeather(selected);
+  }, []);
 
   return (
-    <main className="saved-page-container">
-      <input
-        type="text"
-        placeholder="Search by city ..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="search-input"
+    <main className="flex flex-col items-center gap-8 p-6 max-w-2xl mx-auto">
+      {/* Logo */}
+      <div className="logo-container">
+        <Image
+          src="/weatherlyLogo.png"
+          alt="Weatherly Logo"
+          width={400}
+          height={100}
+          priority
+        />
+      </div>
+
+      {/* Form */}
+      <WeatherForm
+        onSearch={search}
+        dispatch={dispatch}
+        onSaveSelected={saveSelectedWeather}
+        showSavedButton={true}
       />
-      <button className="back-button" onClick={goHome}>
-        ← Home
-      </button>
 
-      <h1 className="saved-title">Saved results</h1>
-
-      {loading && <p className="loading-message">Loading saved data...</p>}
-      {error && <p className="error-message">{error}</p>}
-
-      {!loading && !error && savedWeather.length === 0 && (
-        <p className="loading-message">No saved results found.</p>
+      {/* Notification */}
+      {notification && (
+        <NotificationBox
+          notification={notification}
+          onClose={() => setNotification(null)}
+        />
       )}
 
-      <section className="saved-list">
-        {filteredWeather.map((item) => (
-          <article key={item._id} className="saved-card">
-            <div className="saved-details">
-              <h2>{item.city}</h2>
-              <p>Temperature: {item.temperature}°C</p>
-              <p>Weather: {item.description}</p>
-              <p className="saved-timestamp">
-                Saved on: {new Date(item.createdAt).toLocaleString()}
-              </p>
-            </div>
+      {/* Status */}
+      <WeatherStatus
+        loading={state.loading}
+        error={state.error}
+        hasResults={state.weather.length > 0}
+      />
 
-            <button
-              className="delete-button"
-              onClick={() => handleDelete(item._id)}
-            >
-              Delete
-            </button>
-          </article>
-        ))}
-      </section>
+      {/* Results */}
+      {state.weather.length > 0 && (
+        <WeatherList
+          weather={state.weather}
+          onSelectionChange={handleSelectionChange}
+        />
+      )}
     </main>
   );
 }
