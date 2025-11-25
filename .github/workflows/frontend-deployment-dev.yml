@@ -52,7 +52,7 @@ jobs:
 
       - name: Build frontend docker image
         run: |
-          DEV_TAG=${{ env.FRONTEND_VERSION }}-dev+${{ github.sha }}
+          DEV_TAG=${{ env.FRONTEND_VERSION }}-dev-${{ github.sha }}
           IMAGE_URI=${{ secrets.FRONTEND_IMAGE }}:$DEV_TAG
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
