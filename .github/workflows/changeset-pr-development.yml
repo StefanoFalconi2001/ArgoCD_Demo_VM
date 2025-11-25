@@ -29,7 +29,6 @@ jobs:
       - name: Run Changesets
         uses: changesets/action@v1
         with:
-          branch: "changeset-release"
           publish: "false"
           version: "false"
         env:
